@@ -32,3 +32,16 @@ password="miniostorage"
 
 - https://github.com/minio/minio
 
+## nginx
+
+nginx/nginx.conf修改web服务：
+- proxy_pass中serverName-web 是web服务，在同一个docker-compose里可以描述为：xxx-web:port
+
+
+nginx/nginx.conf修改后端服务：
+
+- proxy_pass中serverName 是后端服务，在同一个docker-compose里可以描述为：xxx:port
+ 
+用法参考：
+- https://www.nginx.cn/doc/example/fullexample.html
+- https://www.nginx.cn/doc/example/fullexample2.html
