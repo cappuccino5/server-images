@@ -5,14 +5,12 @@
 
 运行minio
 
-``` docker-compose -f docker-compose-minio.yml  up ```
-
-
-
-
+``` docker-compose -f docker-compose-minio.yml  up -d```
 命令行执行：
 
-``` docker run  -p 19001:19001 -e  MINIO_ROOT_USER=minio -e MINIO_ROOT_PASSWORD=miniostorage -p 19000:19000  minio/minio server /data --console-address ":19000" --address ":19001" ```
+``` 
+docker run  -p 19001:19001 -e  MINIO_ROOT_USER=minio -e MINIO_ROOT_PASSWORD=miniostorage -p 19000:19000  minio/minio server /data --console-address ":19000" --address ":19001"  
+```
 
 - 19000端口是web管理平台
 
@@ -33,7 +31,7 @@ password="miniostorage"
 - https://github.com/minio/minio
 
 ## nginx
-
+command：``` docker-compose -f docker-compose-nginx.yml up ``
 nginx/nginx.conf修改web服务：
 - proxy_pass中serverName-web 是web服务，在同一个docker-compose里可以描述为：xxx-web:port
 
@@ -48,6 +46,7 @@ nginx/nginx.conf修改后端服务：
 
 ## storage
 
+command：``` docker-compose -f docker-compose-storage.yml up ``
 ### redis5
 
 默认没有密码，注意不要对外暴露端口，因为容易被攻击，内网访问即可
