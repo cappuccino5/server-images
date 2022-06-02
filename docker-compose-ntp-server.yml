@@ -1,0 +1,12 @@
+version: "3"
+services:
+  ntp-server:
+    tty: true
+    image: registry.cn-shenzhen.aliyuncs.com/hujian/ntp:1.0.0
+    container_name: ntp-server
+    hostname: ntp-server
+    ports:
+      - 123:123/udp
+    volumes:
+      - .docker-images/ntp/ntp.conf:/etc/ntp.conf
+    restart: always
