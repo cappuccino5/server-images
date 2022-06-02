@@ -1,0 +1,9 @@
+From ubuntu:20.04
+RUN apt-get update
+RUN apt-get install -y ca-certificates
+RUN apt-get install -y curl
+RUN curl -o helium-wallet-v1.6.10-x86-64-linux.tar.gz https://github.com/helium/helium-wallet-rs/releases/download/v1.6.10/helium-wallet-v1.6.10-x86-64-linux.tar.gz && \
+    tar -zxvf helium-wallet-v1.6.10-x86-64-linux.tar.gz && \
+    rm helium-wallet-v1.6.10-x86-64-linux.tar.gz && \
+    cp helium-wallet /usr/bin/helium-wallet && \
+    chmod ugo+x /usr/bin/helium-wallet

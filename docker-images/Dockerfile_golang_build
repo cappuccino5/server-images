@@ -1,0 +1,26 @@
+From ubuntu:20.04
+USER root
+RUN apt-get update
+RUN apt-get install -y build-essential
+RUN apt-get install -y curl
+RUN apt-get install -y netcat
+
+RUN curl -o /tmp/go.tar.gz https://dl.google.com/go/go1.17.6.linux-amd64.tar.gz && \
+    cd /usr/local/ && tar xzvf /tmp/go.tar.gz && rm /tmp/go.tar.gz && \
+    ln -s /usr/local/go/bin/go /usr/bin/go
+
+# 分别在https://download.docker.com/linux/static/stable/x86_64/和https://download.docker.com/mac/static/stable/aarch64/下载再传上OSS的
+RUN curl -o /tmp/docker.tar.gz https://risinghf-pkg.oss-cn-shenzhen.aliyuncs.com/docker/linux/x86_64/docker-20.10.7.tgz && \
+    cd /tmp && tar xzvf docker.tar.gz && mv /tmp/docker/docker /usr/bin/docker && rm -rf /tmp/docker* && \
+    chmod ugo+x /usr/bin/docker
+
+# 安装rclone: https://rclone.org/downloads/
+RUN curl -o rclone-v1.57.0-linux-amd64.deb https://downloads.rclone.org/v1.57.0/rclone-v1.57.0-linux-amd64.deb && \
+    dpkg -i rclone-v1.57.0-linux-amd64.deb && rm rclone-v1.57.0-linux-amd64.deb
+
+# update git version
+# RUN apt-get install -y make libssl-dev libcurl4-gnutls-dev libexpat1-dev gettext unzip libz-dev
+# RUN curl -o /tmp/git.tar.gz https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.32.0.tar.gz && \
+#     cd /tmp/ && tar xzf git.tar.gz && cd git-2.32.0/ && \
+#     make prefix=/usr/local/git all && make prefix=/usr/local/git install && \
+#     rm -rf /tmp/git* && rm -f /usr/bin/git && ln -s /usr/local/git/bin/git /usr/bin/git

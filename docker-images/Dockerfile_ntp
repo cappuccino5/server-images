@@ -1,0 +1,18 @@
+From ubuntu:20.04
+MAINTAINER hu
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN mkdir -p /opt/cdm/
+COPY ntp/init.sh /opt/cdm/
+COPY ntp/sync.cnf /opt/cdm/
+RUN chmod a+x /opt/cdm/init.sh
+RUN apt-get update && apt-get install -y ntp
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+RUN apt-get install -y net-tools
+RUN apt-get install -y systemd
+RUN apt-get install -y cron
+RUN apt-get install -y ntpstat
+RUN apt-get install -y ntpdate
+EXPOSE 123/udp
+CMD ["sh","-c","/opt/cdm/init.sh* && bash"]
