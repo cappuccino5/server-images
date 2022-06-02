@@ -45,3 +45,16 @@ nginx/nginx.conf修改后端服务：
 用法参考：
 - https://www.nginx.cn/doc/example/fullexample.html
 - https://www.nginx.cn/doc/example/fullexample2.html
+
+## storage
+
+### redis5
+
+默认没有密码，注意不要对外暴露端口，因为容易被攻击，内网访问即可
+
+### postgres13
+
+配置文件：
+- postgresql13/postgresql.conf
+- postgresql13/initdb/业务数据库.conf(初始化业务数据库示例)
+

@@ -1,0 +1,30 @@
+version: "3"
+services:
+  redis:
+    image:  redis:5-alpine
+    container_name: redis
+    ports:
+      - 127.0.0.1:6379:6379
+    volumes:
+      - redis-data:/data
+    restart: always
+    depends_on:
+      - postgresql13
+  postgresql13:
+    image: postgres:13.3
+    container_name: postgresql13
+    command: -c config_file=/etc/postgresql/postgresql.conf
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - 15432:5432
+    volumes:
+      - ./postgresql13/initdb:/docker-entrypoint-initdb.d
+      - ./postgresql13/postgresql.conf:/etc/postgresql/postgresql.conf
+      - postgres13-data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  redis-data:
+  postgres13-data:
