@@ -10,3 +10,5 @@ services:
     volumes:
       - ./docker-images/ntp/ntp.conf:/etc/ntp.conf
     restart: always
+    environment:
+      TZ: "Asia/Shanghai"
