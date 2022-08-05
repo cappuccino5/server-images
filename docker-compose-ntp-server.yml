@@ -10,5 +10,8 @@ services:
     volumes:
       - ./docker-images/ntp/ntp.conf:/etc/ntp.conf
     restart: always
+    cap_add:
+      - SYS_TIME
     environment:
+      NTP_SERVER_HOSTNAME: "cloud.iotsquare.xyz"
       TZ: "Asia/Shanghai"
