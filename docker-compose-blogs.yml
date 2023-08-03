@@ -1,0 +1,9 @@
+version: "3"
+services:
+  blogs:
+    image: swr.cn-north-4.myhuaweicloud.com/kelley/blogs:1.0.2
+    container_name: blogs
+    ports:
+      - 0.0.0.0:28080:80
+    restart: always
+

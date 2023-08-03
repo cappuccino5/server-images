@@ -7,9 +7,7 @@ COPY ntp/init.sh /opt/cdm/
 COPY ntp/sync.cnf /opt/cdm/
 RUN chmod a+x /opt/cdm/init.sh
 RUN apt-get update && apt-get install -y ntp
-RUN apt-get install -y tzdata
-RUN apt-get install -y curl
-
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
 
 RUN apt-get install -y net-tools
 RUN apt-get install -y systemd

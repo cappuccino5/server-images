@@ -13,15 +13,8 @@ fudge   127.127.1.0 stratum 10
 EOF
 fi
 else
-cat << EOF > /etc/ntp.conf
-server  127.127.1.0     # local clock
-fudge   127.127.1.0 stratum 10
-server 0.ubuntu.pool.ntp.org
-server 1.ubuntu.pool.ntp.org
-server cn.pool.ntp.org
-server ${NTP_SERVER_HOSTNAME} prefer
-restrict ${NTP_SERVER_HOSTNAME}
-EOF
+    echo "server ${NTP_SERVER_HOSTNAME} prefer" >> /etc/ntp.conf
+    echo "restrict ${NTP_SERVER_HOSTNAME} " >> /etc/ntp.conf
 fi
 service ntp restart
 #/etc/init.d/ntp restart

@@ -53,6 +53,11 @@ command：``` docker-compose -f docker-compose-storage.yml up ```
 
 ### postgres13
 
+
+###  我的个人博客
+
+docker-compose -f docker-compose-blogs.yml up
+
 配置文件：
 - postgresql13/postgresql.conf
 - postgresql13/initdb/业务数据库.conf(初始化业务数据库示例)

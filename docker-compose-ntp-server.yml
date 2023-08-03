@@ -2,7 +2,7 @@ version: "3"
 services:
   ntp-server:
     tty: true
-    image: registry.cn-shenzhen.aliyuncs.com/hujian/ntp:1.0.0
+    image: swr.cn-north-4.myhuaweicloud.com/kelley/ntp:1.1
     container_name: ntp-server
     hostname: ntp-server
     ports:

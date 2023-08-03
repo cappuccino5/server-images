@@ -5,7 +5,7 @@ RUN apt-get install -y build-essential
 RUN apt-get install -y curl
 RUN apt-get install -y netcat
 
-RUN curl -o /tmp/go.tar.gz https://dl.google.com/go/go1.17.6.linux-amd64.tar.gz && \
+RUN curl -o /tmp/go.tar.gz https://go.dev/dl/go1.20.7.linux-amd64.tar.gz && \
     cd /usr/local/ && tar xzvf /tmp/go.tar.gz && rm /tmp/go.tar.gz && \
     ln -s /usr/local/go/bin/go /usr/bin/go
 
