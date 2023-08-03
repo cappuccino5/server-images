@@ -9,8 +9,8 @@ RUN curl -o /tmp/go.tar.gz https://go.dev/dl/go1.20.7.linux-amd64.tar.gz && \
     cd /usr/local/ && tar xzvf /tmp/go.tar.gz && rm /tmp/go.tar.gz && \
     ln -s /usr/local/go/bin/go /usr/bin/go
 
-# 分别在https://download.docker.com/linux/static/stable/x86_64/和https://download.docker.com/mac/static/stable/aarch64/下载再传上OSS的
-RUN curl -o /tmp/docker.tar.gz https://risinghf-pkg.oss-cn-shenzhen.aliyuncs.com/docker/linux/x86_64/docker-20.10.7.tgz && \
+# 分别在https://download.docker.com/linux/static/stable/x86_64/和https://download.docker.com/mac/static/stable/aarch64/下载
+RUN curl -o /tmp/docker.tar.gz https://download.docker.com/linux/static/stable/x86_64/docker-24.0.5.tgz && \
     cd /tmp && tar xzvf docker.tar.gz && mv /tmp/docker/docker /usr/bin/docker && rm -rf /tmp/docker* && \
     chmod ugo+x /usr/bin/docker
 
