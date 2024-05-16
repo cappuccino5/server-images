@@ -1,6 +1,6 @@
 wallet:
 	#docker context use default
-	docker buildx build -t swr.cn-north-4.myhuaweicloud.com/kelley/helium-wallet --platform linux/amd64 -f Dockerfile_helium_wallet --push .
+	docker buildx build -t swr.cn-north-4.myhuaweicloud.com/kelley/helium-wallet:2.0.0-rc.4 --no-cache  --platform linux/amd64 -f Dockerfile_helium_wallet --push .
 
 ntp:
 	docker buildx build -t swr.cn-north-4.myhuaweicloud.com/kelley/ntp:1.1 --platform linux/amd64 -f Dockerfile_ntp --push .
