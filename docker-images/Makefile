@@ -8,4 +8,8 @@ ntp:
 golang_build:
 	docker context use default
 	docker buildx build -t swr.cn-north-4.myhuaweicloud.com/kelley/golang-build:latest --platform linux/amd64 -f Dockerfile_golang_build --push .
+build:
+	#docker context use default
+	docker buildx build -t swr.cn-north-4.myhuaweicloud.com/kelley/helium-wallet:2.0.0-rc.4 --platform linux/amd64 -f Dockerfile_helium_wallet --push .
+
 
