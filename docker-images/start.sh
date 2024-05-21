@@ -5,13 +5,16 @@ function show_help() {
     echo "  --help, -h    Show this help message"
     echo "  longitude     Longitude coordinate (decimal format)"
     echo "  latitude      Latitude coordinate (decimal format)"
-    echo ""
+    echo "  elevation <value>  Elevation in meters (default: 20)"
+    echo "  gain <value>  Antenna gain in dBi (default: 1.5)"
     echo "Example:"
     echo "  $0 114.04 22.62"
+    echo "  $0 114.04 22.62 22"
+    echo "  $0 114.04 22.62 22 1.6"
     exit 0
 }
 
-if [ "$#" -ne 2 ] && [ "$1" != "--help" ] && [ "$1" != "-h" ]; then
+if  [[ "$#" -ne 2 && "$#" -ne 4 && "$#" -ne 3 ]] && [ "$1" != "--help" ] && [ "$1" != "-h" ]; then
     echo "Error: Incorrect number of arguments."
     show_help
 fi
@@ -22,6 +25,8 @@ fi
 
 lonData=$1
 latData=$2
+elevation=$3
+gain=$4
 password=""
 
 # 需要定位的热点数量，根据hotspots_default_asserts标志位统计得出
@@ -30,6 +35,18 @@ hotspots_count=0
 #hotspots_default_asserts通过命令获取而来，参数："location_asserts"。默认为0表示新设备重来未定位过
 # helium-wallet hotspots info 112EvoKhDQRAXeMTpX5uqZRaa9Mt9JMv8Dz814L6CyLN5eNmQwqG
 hotspots_default_asserts=0
+
+if [ -z "$3" ]; then
+        elevation=15
+    else
+        elevation=$3
+    fi
+
+    if [ -z "$4" ]; then
+        gain=1.5
+    else
+        gain=$4
+ fi
 
 add_hotspots_count() {
     hotspots_list=$(helium-wallet hotspots list)
@@ -78,14 +95,14 @@ hotspots_asserts() {
 
     expect -c "
         set timeout 60
-        spawn helium-wallet hotspots assert --commit --lat $latitude --lon $longitude --elevation 20 --gain 1.5 iot $key
+        spawn helium-wallet hotspots assert --commit --lat $latitude --lon $longitude --elevation $elevation --gain $gain iot $key
         expect \"Wallet Password:\"
         send \"$password\r\"
         expect eof
     "
 
     if [ $? -eq 0 ]; then
-        echo "Executed command: helium-wallet hotspots assert --commit --lat $latitude --lon $longitude --elevation 20 --gain 1.5 iot $key"
+        echo "Executed command: helium-wallet hotspots assert --commit --lat $latitude --lon $longitude --elevation $elevation --gain $gain iot $key"
     else
         echo "Error executing assert command for key: $key"
         echo "Aborting further execution."
@@ -97,7 +114,7 @@ hotspots_asserts() {
 }
 
 main() {
-    add_hotspots_count   # ok
+    add_hotspots_count
     echo "$hotspots_count"
     if [ "$hotspots_count" == "0" ]; then
         echo "Skipping .... not need coordinates $hotspots_count"
