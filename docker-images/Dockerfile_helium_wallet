@@ -36,7 +36,7 @@ RUN wget https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tgz
 RUN tar -xzf Python-3.6.8.tgz
 
 # 进入 Python 源码目录
-WORKDIR /home
+WORKDIR /Python-3.6.8
 
 # 配置并编译 Python
 RUN CC="gcc-10" ./configure --enable-optimizations --with-lto --with-pydebug
