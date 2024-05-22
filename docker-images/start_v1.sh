@@ -1,21 +1,20 @@
 #!/bin/bash
 
 function show_help() {
-    echo "Usage: $0 [--help|-h] <keys> <longitude> <latitude> [<elevation>] [<gain>]"
+    echo "Usage: $0 [--help|-h] <longitude> <latitude> [elevation] [gain]"
     echo "  --help, -h    Show this help message"
-    echo "  keys     Comma-separated list of keys: 'use,'"
     echo "  longitude     Longitude coordinate (decimal format)"
     echo "  latitude      Latitude coordinate (decimal format)"
-    echo "  elevation     Elevation in meters (default: 20)"
-    echo "  gain     Antenna gain in dBi (default: 1.5)"
+    echo "  elevation <value>  Elevation in meters (default: 20)"
+    echo "  gain <value>  Antenna gain in dBi (default: 1.5)"
     echo "Example:"
-    echo "  $0 key1,key2,key3 114.04 22.62"
-    echo "  $0 key1,key2,key3 114.04 22.62 22"
-    echo "  $0 key1,key2,key3 114.04 22.62 22 1.6"
+    echo "  $0 114.04 22.62"
+    echo "  $0 114.04 22.62 22"
+    echo "  $0 114.04 22.62 22 1.6"
     exit 0
 }
 
-if  [[ "$#" -ne 2 && "$#" -ne 4 && "$#" -ne 3 && "$#" -ne 5 ]] && [ "$1" != "--help" ] && [ "$1" != "-h" ]; then
+if  [[ "$#" -ne 2 && "$#" -ne 4 && "$#" -ne 3 ]] && [ "$1" != "--help" ] && [ "$1" != "-h" ]; then
     echo "Error: Incorrect number of arguments."
     show_help
 fi
@@ -24,11 +23,10 @@ if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
     show_help
 fi
 
-hotspot_keys=$1
-lonData=$2
-latData=$3
-elevation=$4
-gain=$5
+lonData=$1
+latData=$2
+elevation=$3
+gain=$4
 password=""
 
 # 需要定位的热点数量，根据hotspots_default_asserts标志位统计得出
@@ -63,64 +61,6 @@ add_hotspots_count() {
 done
 }
 
-add_hotspots_countV2() {
-     local keys=$1
-     local hotspots_list
-     local hotspots_keys=()
-    IFS=',' read -ra hotspots_list <<< "$keys"
-    for key in "${hotspots_list[@]}"; do
-         echo "查询热点状态：$key"
-         hotspot_info=$(helium-wallet hotspots info ${key})
-         info_item=$(echo "$hotspot_info" | jq -r '.info')
-         if [ "$info_item" == "{}" ] ; then
-             hotspots_keys+=("$key")
-             echo "热点： $key 定位次数 无 $info_item"
-             ((hotspots_count=hotspots_count+1))
-             continue
-         fi
-         location_asserts=$(echo "$hotspot_info" | jq -r '.info.iot.location_asserts')
-         echo "热点： $key 定位次数 $location_asserts"
-         if [ "$location_asserts" == $hotspots_default_asserts ] || [ "$location_asserts" == nil ]; then
-              hotspots_keys+=("$key")
-              ((hotspots_count=hotspots_count+1))
-              continue
-         fi
-    done
-#    echo "需要定位的有效热点keys：${hotspots_keys[@]}"
-}
-
-add_coordinatesV2(){
-  result=$(python3.6 /etc/helium/get_coordinates.py $lonData $latData $hotspots_count)
-    IFS='[],' read -ra coordinates <<< "$result"
-
-   local index=0
-   local keys=$1
-   local hotspots_list
-    IFS=',' read -ra hotspots_list <<< "$keys"
-    for key in "${hotspots_list[@]}"; do
-         hotspot_info=$(helium-wallet hotspots info ${key})
-         info_item=$(echo "$hotspot_info" | jq -r '.info')
-         if [ "$info_item" == "{}" ] ; then
-          ((hotspots_count=hotspots_count+1))
-          latitude=$(echo "${coordinates[$index*2+1]}" | awk -F':' '{print $2}' | tr -d '",')
-          longitude=$(echo "${coordinates[$index*2+2]}" | awk -F':' '{print $2}' | tr -d '",}')
-          echo "hotspots_key: $key,Latitude: $latitude, Longitude: $longitude"
-          hotspots_asserts "$key" "$latitude" "$longitude"
-          ((index=index+1))
-          continue
-         fi
-         location_asserts=$(echo "$hotspot_info" | jq -r '.info.iot.location_asserts')
-         if [ "$location_asserts" == $hotspots_default_asserts ]; then
-          latitude=$(echo "${coordinates[$index*2+1]}" | awk -F':' '{print $2}' | tr -d '",')
-          longitude=$(echo "${coordinates[$index*2+2]}" | awk -F':' '{print $2}' | tr -d '",}')
-          echo "hotspots_key: $key,Latitude: $latitude, Longitude: $longitude"
-          hotspots_asserts "$key" "$latitude" "$longitude"
-          ((index=index+1))
-          continue
-         fi
-done
-}
-
 add_coordinates(){
   result=$(python3.6 /etc/helium/get_coordinates.py $lonData $latData $hotspots_count)
     IFS='[],' read -ra coordinates <<< "$result"
@@ -135,7 +75,7 @@ add_coordinates(){
          if [ "$location_asserts" == $hotspots_default_asserts ]; then
           latitude=$(echo "${coordinates[$index*2+1]}" | awk -F':' '{print $2}' | tr -d '",')
           longitude=$(echo "${coordinates[$index*2+2]}" | awk -F':' '{print $2}' | tr -d '",}')
-          echo "hotspot_key: $key,Latitude: $latitude, Longitude: $longitude"
+          echo "hotspots_key: $key,Latitude: $latitude, Longitude: $longitude"
           hotspots_asserts "$key" "$latitude" "$longitude"
           ((index=index+1))
          fi
@@ -174,13 +114,14 @@ hotspots_asserts() {
 }
 
 main() {
-    add_hotspots_countV2 "$hotspot_keys"
-    echo "开始执行批量定位：需要定位的热点数量 $hotspots_count"
+    add_hotspots_count
+    echo "$hotspots_count"
     if [ "$hotspots_count" == "0" ]; then
         echo "Skipping .... not need coordinates $hotspots_count"
       return
     fi
-    add_coordinatesV2 "$hotspot_keys"
+    echo "开始执行批量定位：需要定位的热点数量 $hotspots_count"
+    add_coordinates
 }
 
 main
