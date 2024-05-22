@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function show_help() {
-    echo "Usage: $0 [--help|-h] <latitude> <longitude>"
+    echo "Usage: $0 [--help|-h] <longitude> <latitude> [elevation] [gain]"
     echo "  --help, -h    Show this help message"
     echo "  longitude     Longitude coordinate (decimal format)"
     echo "  latitude      Latitude coordinate (decimal format)"
