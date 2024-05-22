@@ -38,16 +38,17 @@ hotspots_count=0
 # helium-wallet hotspots info 112EvoKhDQRAXeMTpX5uqZRaa9Mt9JMv8Dz814L6CyLN5eNmQwqG
 hotspots_default_asserts=0
 
-if [ -z "$3" ]; then
+# todo 记得同步修改
+if [ -z "$4" ]; then
         elevation=15
     else
-        elevation=$3
+        elevation=$4
     fi
 
-    if [ -z "$4" ]; then
+    if [ -z "$5" ]; then
         gain=1.5
     else
-        gain=$4
+        gain=$5
  fi
 
 add_hotspots_count() {
@@ -142,10 +143,20 @@ add_coordinates(){
 done
 }
 
+trim_string() {
+    local input_string="$1"
+    local trimmed_string
+    trimmed_string=$(echo "$input_string" | sed -e 's/^\s*//g' -e 's/\s*$//g' -e 's/\s\s*/ /g')
+    echo "$trimmed_string"
+}
+
 hotspots_asserts() {
     local key=$1
     local latitude=$2
     local longitude=$3
+
+   lon=$(trim_string "$longitude")
+   lat=$(trim_string "$latitude")
 
     if [ -z "$password" ]; then
         echo "Please enter the wallet password:"
@@ -155,14 +166,14 @@ hotspots_asserts() {
 
     expect -c "
         set timeout 60
-        spawn helium-wallet hotspots assert --commit --lat $latitude --lon $longitude --elevation $elevation --gain $gain iot $key
+        spawn helium-wallet hotspots assert --commit --lat=$lat --lon=$lon --elevation=$elevation --gain=$gain iot $key
         expect \"Wallet Password:\"
         send \"$password\r\"
         expect eof
     "
 
     if [ $? -eq 0 ]; then
-        echo "Executed command: helium-wallet hotspots assert --commit --lat $latitude --lon $longitude --elevation $elevation --gain $gain iot $key"
+        echo "Executed command: helium-wallet hotspots assert --commit --lat=$lat --lon=$lon --elevation=$elevation --gain=$gain iot $key"
     else
         echo "Error executing assert command for key: $key"
         echo "Aborting further execution."
