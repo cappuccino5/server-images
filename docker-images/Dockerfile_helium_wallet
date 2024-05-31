@@ -54,13 +54,13 @@ RUN python3.6 -m pip install scikit-build cython cmake
 # 验证 Python 安装
 RUN python3.6 --version
 RUN python3.6 -m pip install h3==3.7.7
-RUN wget https://github.com/helium/helium-wallet-rs/releases/download/v2.0.0-rc.3/helium-wallet-x86-64-linux.tar.gz && \
+RUN wget https://github.com/helium/helium-wallet-rs/releases/download/helium-wallet-v2.0.0-rc.7/helium-wallet-x86-64-linux.tar.gz && \
     tar -zxvf helium-wallet-x86-64-linux.tar.gz && \
     rm -f helium-wallet-x86-64-linux.tar.gz && \
     cp helium-wallet-x86-64-linux/helium-wallet /usr/bin/helium-wallet && \
     chmod ugo+x /usr/bin/helium-wallet
-COPY get_coordinates.py /etc/helium/get_coordinates.py
-COPY start.sh /usr/local/bin/start.sh
+COPY get_coords.py /Python-3.6.8
+COPY main.py /Python-3.6.8
 CMD ["/bin/sh", "-c","while true; do sleep 1; done"]
 
 
