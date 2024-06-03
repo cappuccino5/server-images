@@ -122,34 +122,14 @@ class Coordinates:
         print(f" request h3_index: {h3_index} get_coordinates_form_index: {center_latitude},{center_longitude}")
         rows, cols = self.get_rows_and_cols(number)
         matrix_coords = self.get_matrix_coordinates(center_latitude, center_longitude, rows, cols)
-        # self.test(matrix_coords)
-        matrix_coordinates = []
-        for row in matrix_coords:
-            try:
-                lat1, lon1 = row["latitude"], row["longitude"]
-                lat_and_long = f"{lat1},{lon1}"
-                matrix_coordinates.append({"lat_and_long": lat_and_long})
-            except ValueError as e:
-                print(f"error: {e}")
-                continue
-        return matrix_coordinates
+        return matrix_coords
 
     def get_coordinates_form_lat_and_long(self, latitude, longitude, number):
         center_latitude, center_longitude = self.get_center_coords(latitude, longitude)
         print(f" request get_coordinates_form_lat_and_long: {center_latitude},{center_longitude}")
         rows, cols = self.get_rows_and_cols(number)
         matrix_coords = self.get_matrix_coordinates(center_latitude, center_longitude, rows, cols)
-        self.test(matrix_coords)
-        matrix_coordinates = []
-        for row in matrix_coords:
-            try:
-                lat1, lon1 = row["latitude"], row["longitude"]
-                lat_and_long = f"{lat1},{lon1}"
-                matrix_coordinates.append({"lat_and_long": lat_and_long})
-            except ValueError as e:
-                print(f"error: {e}")
-                continue
-        return matrix_coordinates
+        return matrix_coords
 
     def get_rows_and_cols(self, number):
         number = number + len(self.skip_items) + int((number * 0.2))
@@ -250,6 +230,7 @@ def main():
         elif latitude != 0 and longitude != 0:
             matrix_coords = d.get_coordinates_form_lat_and_long(latitude, longitude, number)
 
+        d.test(matrix_coords)
         # 随机排序
         random.shuffle(matrix_coords)
         # print(json.dumps(matrix_coords))
@@ -258,7 +239,8 @@ def main():
         for row in matrix_coords:
             if count >= d.count:
                 break
-            lat_and_long = row["lat_and_long"]
+            lat1, lon1 = row["latitude"], row["longitude"]
+            lat_and_long = f"{lat1},{lon1}"
             print(f"{lat_and_long}")
             count = count + 1
         print(f"total_count  {len(matrix_coords)}, return count {count}")

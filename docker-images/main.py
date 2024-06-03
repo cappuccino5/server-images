@@ -48,9 +48,8 @@ class Location:
     def add_coordinates(self):
         matrix_coords = []
         if self.latitude > 0 and self.longitude > 0:
-            center_latitude, center_longitude = self.coord_generate.get_center_coords(self.latitude, self.longitude)
-            rows, cols = self.coord_generate.get_rows_and_cols(self.hotspots_count)
-            matrix_coords = self.coord_generate.get_matrix_coordinates(center_latitude, center_longitude, rows, cols)
+            matrix_coords = self.coord_generate.get_coordinates_form_lat_and_long(self.latitude, self.longitude,
+                                                                                  self.hotspots_count)
         elif self.h3_index != "":
             matrix_coords = self.coord_generate.get_coordinates_form_index(self.h3_index,
                                                                            self.hotspots_count)
