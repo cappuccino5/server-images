@@ -29,8 +29,11 @@ class Location:
         hotspots_count = 0
         for key in hotspot_keys_list:
             hotspot_info = subprocess.check_output(["helium-wallet", "hotspots", "info", key["key"]]).decode().strip()
-            location_asserts = json.loads(hotspot_info)["info"]["iot"]["location_asserts"]
-            print(f"Hotspot: {key['key']} Location Asserts: {location_asserts}")
+            try:
+                location_asserts = json.loads(hotspot_info)["info"]["iot"]["location_asserts"]
+            except KeyError:
+                print(f"Will location asserts hotspot: {key['key']}")
+                location_asserts = hotspots_default_asserts
             if location_asserts == hotspots_default_asserts:
                 self.hotspot_keys.append(key["key"])
                 hotspots_count += 1
@@ -72,7 +75,7 @@ class Location:
             os.environ["WALLET_PASSWORD"] = password
             # os.putenv("WALLET_PASSWORD", password)
         try:
-            command = f"helium-wallet hotspots update --commit --lat={latitude} --lon={longitude} --elevation={elevation} --gain={gain} iot {key}"
+            command = f"helium-wallet hotspots update --onboarding=m --commit --lat={latitude} --lon={longitude} --elevation={elevation} --gain={gain} iot {key}"
             print(f"Executing command: {command}")
             result = subprocess.run(["expect", "-c", f"""
                         set timeout 60
